@@ -39,6 +39,9 @@ services:
 ```
 3. Run: `docker-compose up -d`
 
+![windows screenshot](https://github.com/vaggeliskls/windows-in-docker-container/blob/main/images/screen-1.png?raw=true )
+
+
 > The PAT token needs Read and Write access to organization self hosted runners
 
 # Remote Desktop
