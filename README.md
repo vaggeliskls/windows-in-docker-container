@@ -1,4 +1,4 @@
-# windows-vagrant-vm
+# Windows in docker container
 A implementation of windows OS (x64) based on vagrant VM, libvirt and docker compose. The VM is created inside a container using vagrant and libvirt. This strategy makes the deployment of windows OS trivial and plug and play.
 
 # Prerequisites
