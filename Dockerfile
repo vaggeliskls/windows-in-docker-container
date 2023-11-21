@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.5
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm-256color
@@ -11,7 +11,6 @@ RUN apt-get update -y && \
     libvirt-daemon-system \
     libvirt-dev \
     openssh-server \
-    linux-image-$(uname -r) \
     curl \
     net-tools \
     gettext-base \
