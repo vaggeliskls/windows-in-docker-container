@@ -21,7 +21,10 @@ jobs:
       - name: Remove unnecessary files
         run: |
           sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo apt-get remove -y '^aspnetcore-.*' '^dotnet-.*' '^llvm-.*' 'php.*' '^mongodb-.*' '^mysql-.*' --fix-missing 
+          sudo apt-get remove -y google-cloud-cli google-cloud-sdk azure-cli google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri --fix-missing
           
       - name: Checkout current repository
         uses: actions/checkout@v4
