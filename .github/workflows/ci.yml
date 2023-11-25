@@ -1,13 +1,13 @@
 name: Windows Vagrant VM
 
-# on:
-#   release:
-#     types: [published]
-
 on:
-  push:
-    branches:
-      - qemu-enable
+  release:
+    types: [published]
+
+# on:
+#   push:
+#     branches:
+#       - qemu-enable
 
 env:
   REGISTRY: ghcr.io
