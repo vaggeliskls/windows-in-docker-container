@@ -1,13 +1,13 @@
 name: Windows Vagrant VM
 
-on:
-  release:
-    types: [published]
-
 # on:
-#   push:
-#     branches:
-#       - qemu-enable
+#   release:
+#     types: [published]
+
+on:
+  push:
+    branches:
+      - docker-push
 
 env:
   REGISTRY: ghcr.io
@@ -34,7 +34,8 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ${{ env.REGISTRY }}/${{ github.repository }}
+            ghcr.io/${{ github.repository }}
+            docker.io/${{ github.repository }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -50,9 +51,16 @@ jobs:
       - name: Login to Github packages
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
       - name: Build and push
         uses: docker/build-push-action@v5
