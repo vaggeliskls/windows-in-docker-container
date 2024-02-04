@@ -1,8 +1,5 @@
 # syntax=docker/dockerfile:1.5
-FROM ubuntu:22.04
-
-ENV DEBIAN_FRONTEND noninteractive
-ENV TERM xterm-256color
+FROM FROM nvidia/cuda:12.3.1-runtime-ubuntu22.04
 
 RUN apt-get update -y && \
     apt-get install -y \
