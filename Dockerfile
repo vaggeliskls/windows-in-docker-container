@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.5
-FROM FROM nvidia/cuda:12.3.1-runtime-ubuntu22.04
+FROM nvidia/cuda:12.3.1-runtime-ubuntu22.04
 
 RUN apt-get update -y && \
     apt-get install -y \
