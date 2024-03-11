@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   win10:
+    image: ghcr.io/vaggeliskls/windows-in-docker-container:latest
     build:
       dockerfile: ./Dockerfile
       context: .
@@ -9,10 +10,9 @@ services:
     stdin_open: true
     tty: true
     privileged: true
-    # runtime: nvidia
+    runtime: nvidia
     cap_add:
-      - NET_ADMIN
-      - SYS_ADMIN
+      - ALL
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
     devices:
