@@ -11,6 +11,8 @@ RUN apt-get update -y && \
     curl \
     net-tools \
     gettext-base \
+    pciutils \
+    libvirt-clients \
     jq && \
     apt-get autoremove -y && \
     apt-get clean
@@ -33,5 +35,5 @@ COPY startup.sh /
 RUN chmod +x startup.sh
 RUN rm -rf /Vagrantfile
 
-ENTRYPOINT ["/startup.sh"]
-CMD ["/bin/bash"]
+ENTRYPOINT []
+CMD /startup.sh
