@@ -14,6 +14,8 @@ Vagrant.configure("2") do |config|
         # 2. virt-host-validate
         # example docker run --privileged ghcr.io/vaggeliskls/windows-in-docker-container:latest virt-host-validate
         # IOMMU appears to be disabled in kernel. Add intel_iommu=on to kernel cmdline arguments
+        # https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.1/html/installation_guide/appe-configuring_a_hypervisor_host_for_pci_passthrough
+        # https://fasterdata.es.net/host-tuning/linux/100g-tuning/iommu/
         # https://serverfault.com/questions/1119853/error-starting-domain-unsupported-configuration-host-doesnt-support-passthrou
         # GPU passthrough
         libvirt.cpu_mode = "host-passthrough"
