@@ -1,6 +1,5 @@
 Vagrant.configure("2") do |config|
-
-    config.vm.box = "peru/windows-server-2022-standard-x64-eval"
+    config.vm.box = "${VAGRANT_BOX}"
     config.vm.network "private_network", ip: "192.168.121.10"
     config.vm.network "forwarded_port", guest: 445, host: 445
     config.vm.provision "shell", inline: "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
@@ -8,6 +7,7 @@ Vagrant.configure("2") do |config|
         libvirt.memory = ${MEMORY}
         libvirt.cpus = ${CPU}
         libvirt.machine_virtual_size = ${DISK_SIZE}
+        libvirt.forward_ssh_port = true
     end
     config.winrm.max_tries = 300 # default is 20
     config.winrm.retry_delay = 5 #seconds. This is the defaul value and just here for documentation.
