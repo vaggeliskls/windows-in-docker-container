@@ -26,14 +26,8 @@ services:
     stdin_open: true
     tty: true
     privileged: true
-    cap_add:
-      - NET_ADMIN
-      - SYS_ADMIN
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
-    devices:
-      - /dev/kvm
-      - /dev/net/tun
     ports:
       - 3389:3389
 ```
