@@ -14,22 +14,28 @@ RUN apt-get update -y && \
     curl \
     net-tools \
     gettext-base \
+    kmod \
+    rsync \
+    samba \
     jq && \
     apt-get autoremove -y && \
     apt-get clean
 
 # Installation of vagrant
-RUN wget https://releases.hashicorp.com/vagrant/2.4.0/vagrant_2.4.0-1_amd64.deb && \
-    apt install ./vagrant_2.4.0-1_amd64.deb && \
-    rm -rf ./vagrant_2.4.0-1_amd64.deb
+ARG VAGRANT_VERSION=2.4.1
+ARG VAGRANT_BOX=peru/windows-server-2022-standard-x64-eval
+RUN wget https://releases.hashicorp.com/vagrant/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}-1_amd64.deb && \
+    apt install ./vagrant_${VAGRANT_VERSION}-1_amd64.deb && \
+    rm -rf ./vagrant_${VAGRANT_VERSION}-1_amd64.deb
 # Installtion of vagrant plugins
 RUN vagrant plugin install vagrant-libvirt
 # Installtion of vagrant box
-RUN vagrant box add --provider libvirt peru/windows-server-2022-standard-x64-eval && \
-    vagrant init peru/windows-server-2022-standard-x64-eval
+RUN vagrant box add --provider libvirt ${VAGRANT_BOX} && \
+    vagrant init ${VAGRANT_BOX}
 
 ENV PRIVILEGED=true
 ENV INTERACTIVE=true
+ENV VAGRANT_BOX=$VAGRANT_BOX
 
 COPY Vagrantfile /Vagrantfile.tmp
 COPY startup.sh /
