@@ -1,7 +1,7 @@
 # 💻 Windows in Docker Container
 A plug-and-play implementation of Windows OS (x64) based on Vagrant VM, libvirt, and docker-compose. The VM is created inside a container using Vagrant and libvirt, making the deployment of Windows OS straightforward and easy.
 
-⭐ Don't forget to star the project if it helped you!
+⭐ **Don't forget to star the project if it helped you!**
 
 # 📋 Prerequisites
 
