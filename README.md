@@ -1,12 +1,14 @@
-# Windows in docker container
-A implementation of windows OS (x64) based on vagrant VM, libvirt and docker compose. The VM is created inside a container using vagrant and libvirt. This strategy makes the deployment of windows OS trivial and plug and play.
+# 💻 Windows in Docker Container
+A plug-and-play implementation of Windows OS (x64) based on Vagrant VM, libvirt, and docker-compose. The VM is created inside a container using Vagrant and libvirt, making the deployment of Windows OS straightforward and easy.
 
-# Prerequisites
+⭐ **Don't forget to star the project if it helped you!**
+
+# 📋 Prerequisites
 
 - [docker](https://www.docker.com/) >= 24
 - [docker-compose](https://www.docker.com/) >= 1.18
 
-# Deployment Guide
+# 🚀 Deployment Guide
 
 1. Create/Update the environmental file `.env`
 ```
@@ -35,16 +37,17 @@ services:
 
 ![windows screenshot](https://github.com/vaggeliskls/windows-in-docker-container/blob/main/images/screen-1.png?raw=true )
 
-# Remote Desktop
-For debugging purposes or testing you can always connect to the VM with remote desktop softwares.
+# 🌐 Remote Desktop
+For debugging purposes or even testing, you can always connect to the VM using remote desktop software.
 
-Some software that used when developed was 
+Software used during development:
+
 1. Linux: rdesktop `rdesktop <ip>:3389` or [remina](https://remmina.org/)
 2. MacOS: [Windows remote desktop](https://apps.apple.com/us/app/microsoft-remote-desktop/id1295203466?mt=12)
 3. Windows: buildin `Remote Windows Connection` 
 
-## User login
-The default users based on vagrant image are 
+# 🔑 User Login
+Default users based on the Vagrant image are:
 
 1. Administrator
     - Username: Administrator
@@ -53,7 +56,7 @@ The default users based on vagrant image are
     - Username: vagrant
     - Password: vagrant
 
-# References
+# 📚 References
 
 - [Windows Vagrant Tutorial](https://github.com/SecurityWeekly/vulhub-lab)
 - [Vagrant image: peru/windows-server-2022-standard-x64-eval](https://app.vagrantup.com/peru/boxes/windows-server-2022-standard-x64-eval)
