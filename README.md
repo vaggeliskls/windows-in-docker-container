@@ -1,12 +1,12 @@
 # 💻 Windows in Docker Container
-A plug-and-play implementation of Windows OS (x64) based on Vagrant VM, libvirt, and docker-compose. The VM is created inside a container using Vagrant and libvirt, making the deployment of Windows OS straightforward and easy.
+Discover an innovative and efficient method of deploying Windows OS (x64) on your system using the power of Vagrant VM, libvirt, and docker-compose. Together, these technologies help you containerize Windows OS, enabling you to manage a Windows instance just as you would any Docker container. This seamless integration into existing workflows significantly enhances convenience and optimizes resource allocation.
 
 ⭐ **Don't forget to star the project if it helped you!**
 
 # 📋 Prerequisites
 
-- [docker](https://www.docker.com/) >= 24
-- [docker-compose](https://www.docker.com/) >= 1.18
+- [Docker](https://www.docker.com/) version 24 or higher.
+- [docker-compose](https://www.docker.com/) version 1.18 or higher.
 
 # 🚀 Deployment Guide
 
@@ -37,7 +37,7 @@ services:
 
 ![windows screenshot](https://github.com/vaggeliskls/windows-in-docker-container/blob/main/images/screen-1.png?raw=true )
 
-# 🌐 Remote Desktop
+# 🌐 Access via Remote Desktop
 For debugging purposes or even testing, you can always connect to the VM using remote desktop software.
 
 Software used during development:
@@ -56,7 +56,7 @@ Default users based on the Vagrant image are:
     - Username: vagrant
     - Password: vagrant
 
-# 📚 References
+# 📚 Further Reading and Resources
 
 - [Windows Vagrant Tutorial](https://github.com/SecurityWeekly/vulhub-lab)
 - [Vagrant image: peru/windows-server-2022-standard-x64-eval](https://app.vagrantup.com/peru/boxes/windows-server-2022-standard-x64-eval)
