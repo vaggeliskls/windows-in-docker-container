@@ -4,7 +4,7 @@
 set -eou pipefail
 # Replace environmental variable to Vagrandfile
 export RANDOM_STR=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)
-
+pwd
 if [ ! -f Vagrantfile ]
 then
     envsubst \
@@ -17,6 +17,11 @@ chown root:kvm /dev/kvm
 /usr/sbin/libvirtd --daemon
 /usr/sbin/virtlogd --daemon
 
-VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up #--debug
-
+# Debug: --debug
+vagrant up --provider=libvirt
+# Display running boxes
+virsh list --all
 exec "$@"
+
+# Keep container running
+exec tail -f /dev/null
