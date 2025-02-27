@@ -3,13 +3,13 @@ Discover an innovative and efficient method of deploying Windows OS (x64) on you
 
 ⭐ **Don't forget to star the project if it helped you!**
 
-# 📋 Prerequisites
+## 📋 Prerequisites
 
 - [Docker](https://www.docker.com/) version 20 or higher.
 
 > The docker compose is embedded as plugin
 
-# 🚀 Deployment Guide
+## 🚀 Deployment Guide
 
 1. Create/Update the environmental file `.env`
 ```
@@ -20,8 +20,6 @@ DISK_SIZE=100
 ```
 2. Create `docker-compose.yml`
 ```yaml
-version: "3.9"
-
 services:
   win10:
     image: docker.io/vaggeliskls/windows-in-docker-container:latest
@@ -29,25 +27,58 @@ services:
     stdin_open: true
     tty: true
     privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
     ports:
       - 3389:3389
+      - 2222:2222
 ```
-3. Run: `docker compose up -d`
+4. Create `docker-compose.override.yml` when you want your VM to be persistent
+```yaml
+services:
+  win10:
+    volumes:
+      - libvirt_data:/var/lib/libvirt
+      - vagrant_data:/root/.vagrant.d
+      - vagrant_project:/app/.vagrant
+      - libvirt_config:/etc/libvirt
+
+volumes:
+  libvirt_data:
+    name: libvirt_data
+  vagrant_data:
+    name: vagrant_data
+  vagrant_project:
+    name: vagrant_project
+  libvirt_config:
+    name: libvirt_config
+```
+
+5. Run: `docker compose up -d`
+
+> When you want to destroy everything `docker compose down -v`
 
 ![windows screenshot](https://github.com/vaggeliskls/windows-in-docker-container/blob/main/images/screen-1.png?raw=true )
 
-# 🌐 Access via Remote Desktop
-For debugging purposes or even testing, you can always connect to the VM using remote desktop software.
+## 🌐 Access  
 
-Software used during development:
+### Remote Desktop (RDP)  
+For debugging or testing, you can connect to the VM using **Remote Desktop** on port `3389`.  
 
-1. Linux: rdesktop `rdesktop <ip>:3389` or [remina](https://remmina.org/)
-2. MacOS: [Windows remote desktop](https://apps.apple.com/us/app/microsoft-remote-desktop/id1295203466?mt=12)
-3. Windows: buildin `Remote Windows Connection` 
+#### Software for Remote Desktop Access  
+| OS       | Software |
+|----------|----------------|
+| **Linux**   | [`rdesktop`](https://github.com/rdesktop/rdesktop) → `rdesktop <ip>:3389` or [`Remmina`](https://remmina.org/) |
+| **MacOS**   | [Microsoft Remote Desktop](https://apps.apple.com/us/app/microsoft-remote-desktop/id1295203466?mt=12) |
+| **Windows** | Built-in **Remote Desktop Connection** |
 
-# 🔑 User Login
+---
+
+### SSH   
+You can connect via SSH using either the **Administrator** or **Vagrant** user credentials.  
+```bash
+ssh <user>@<host> -p 2222
+```
+
+## 🔑 User Login
 Default users based on the Vagrant image are:
 
 1. Administrator
@@ -57,7 +88,7 @@ Default users based on the Vagrant image are:
     - Username: vagrant
     - Password: vagrant
 
-# 📚 Further Reading and Resources
+## 📚 Further Reading and Resources
 
 - [Windows Vagrant Tutorial](https://github.com/SecurityWeekly/vulhub-lab)
 - [Vagrant image: peru/windows-server-2022-standard-x64-eval](https://app.vagrantup.com/peru/boxes/windows-server-2022-standard-x64-eval)
