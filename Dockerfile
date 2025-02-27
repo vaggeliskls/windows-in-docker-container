@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.5
-FROM ubuntu:22.04
+# syntax=docker/dockerfile:1
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm-256color
@@ -9,7 +9,9 @@ RUN apt-get update -y && \
     qemu-kvm \
     build-essential \
     libvirt-daemon-system \
+    libvirt-clients \
     libvirt-dev \
+    ebtables \
     openssh-server \
     curl \
     net-tools \
@@ -22,7 +24,7 @@ RUN apt-get update -y && \
     apt-get clean
 
 # Installation of vagrant
-ARG VAGRANT_VERSION=2.4.1
+ARG VAGRANT_VERSION=2.4.3
 ARG VAGRANT_BOX=peru/windows-server-2022-standard-x64-eval
 RUN wget https://releases.hashicorp.com/vagrant/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}-1_amd64.deb && \
     apt install ./vagrant_${VAGRANT_VERSION}-1_amd64.deb && \
@@ -37,10 +39,9 @@ ENV PRIVILEGED=true
 ENV INTERACTIVE=true
 ENV VAGRANT_BOX=$VAGRANT_BOX
 
-COPY Vagrantfile /Vagrantfile.tmp
-COPY startup.sh /
-RUN chmod +x startup.sh
-RUN rm -rf /Vagrantfile
+WORKDIR /app
+COPY Vagrantfile Vagrantfile.tmp
+COPY --chmod=755 startup.sh .
 
-ENTRYPOINT ["/startup.sh"]
-CMD ["/bin/bash"]
+ENTRYPOINT []
+CMD ["/app/startup.sh"]
