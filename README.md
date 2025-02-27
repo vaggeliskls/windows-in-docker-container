@@ -73,7 +73,7 @@ For debugging or testing, you can connect to the VM using **Remote Desktop** on 
 ---
 
 ### SSH   
-You can connect via SSH using either the **Administrator** or **Vagrant** user credentials.  
+You can connect via SSH using either the **administrator** or **Vagrant** user credentials.  
 ```bash
 ssh <user>@<host> -p 2222
 ```
