@@ -1,7 +1,10 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "${VAGRANT_BOX}"
-    config.vm.network "private_network", ip: "192.168.121.10"
-    config.vm.network "forwarded_port", guest: 445, host: 445
+    config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh"   # ✅ Forward SSH
+    config.vm.network "forwarded_port", guest: 80, host: 8080, id: "http"  # ✅ Forward HTTP
+    config.vm.network "forwarded_port", guest: 443, host: 8443, id: "https" # ✅ Forward HTTPS
+    config.vm.network "forwarded_port", guest: 3389, host: 3389, id: "rdp" # ✅ Forward RDP
+
     config.vm.provision "shell", inline: "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
     config.vm.provider "libvirt" do |libvirt|
         libvirt.memory = ${MEMORY}
