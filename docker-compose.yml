@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   win10:
     image: docker.io/vaggeliskls/windows-in-docker-container:latest
@@ -11,7 +9,6 @@ services:
     tty: true
     privileged: true
     # runtime: nvidia
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
     ports:
       - 3389:3389
+      - 2222:2222
