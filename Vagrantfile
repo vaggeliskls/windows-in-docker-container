@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
     config.vm.network "forwarded_port", guest: 80, host: 8080, id: "http"  # ✅ Forward HTTP
     config.vm.network "forwarded_port", guest: 443, host: 8443, id: "https" # ✅ Forward HTTPS
     config.vm.network "forwarded_port", guest: 3389, host: 3389, id: "rdp" # ✅ Forward RDP
-
+    # config.vm.synced_folder "/app/shared", "C:/shared", type: "rsync"
     config.vm.provision "shell", inline: "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
     config.vm.provider "libvirt" do |libvirt|
         libvirt.memory = ${MEMORY}
