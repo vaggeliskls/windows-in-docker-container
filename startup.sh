@@ -16,6 +16,7 @@ chown root:kvm /dev/kvm
 
 /usr/sbin/libvirtd --daemon
 /usr/sbin/virtlogd --daemon
+# smbd --daemon
 
 # Debug: --debug
 vagrant up --provider=libvirt

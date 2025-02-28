@@ -4,7 +4,17 @@ Vagrant.configure("2") do |config|
     config.vm.network "forwarded_port", guest: 80, host: 8080, id: "http"  # ✅ Forward HTTP
     config.vm.network "forwarded_port", guest: 443, host: 8443, id: "https" # ✅ Forward HTTPS
     config.vm.network "forwarded_port", guest: 3389, host: 3389, id: "rdp" # ✅ Forward RDP
+    # Rsync
+    # This needs the rsync to be installed on widnows box. The sync is executed before the install
+    # that leads to: There was an error when attempting to rsync a synced folder.
     # config.vm.synced_folder "/app/shared", "C:/shared", type: "rsync"
+    # Samba
+    # Currently samba is not supported on linux hosts 
+    # https://developer.hashicorp.com/vagrant/docs/synced-folders/smb
+    # config.vm.synced_folder "/app/shared", "C:/shared", type: "smb"
+    # NFS
+    # When running nfs server in container
+    # * Not starting NFS kernel daemon: no support in current kernel
     config.vm.provision "shell", inline: "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
     config.vm.provider "libvirt" do |libvirt|
         libvirt.memory = ${MEMORY}
