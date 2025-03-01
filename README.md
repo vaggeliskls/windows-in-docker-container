@@ -23,6 +23,7 @@ DISK_SIZE=100
 services:
   win10:
     image: docker.io/vaggeliskls/windows-in-docker-container:latest
+    platform: linux/amd64
     env_file: .env
     stdin_open: true
     tty: true
