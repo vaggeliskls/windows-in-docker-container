@@ -1,6 +1,7 @@
 services:
   win10:
     image: docker.io/vaggeliskls/windows-in-docker-container:latest
+    platform: linux/amd64
     build:
       dockerfile: ./Dockerfile
       context: .
