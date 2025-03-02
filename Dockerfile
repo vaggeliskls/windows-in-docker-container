@@ -40,7 +40,7 @@ ENV INTERACTIVE=true
 ENV VAGRANT_BOX=$VAGRANT_BOX
 
 WORKDIR /app
-COPY --chmod=755 startup.sh Vagrantfile /app
+COPY --chmod=755 startup.sh Vagrantfile /app/
 
 ENTRYPOINT []
 CMD ["/app/startup.sh"]
