@@ -1,28 +1,19 @@
 #!/bin/bash
-# Username: Administrator, vagrant
-# Password: vagrant
 set -eou pipefail
-# Replace environmental variable to Vagrandfile
-export RANDOM_STR=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)
 pwd
-if [ ! -f Vagrantfile ]
-then
-    envsubst \
-    '${VAGRANT_BOX},${PRIVILEGED},${INTERACTIVE},${MEMORY},${CPU},${DISK_SIZE},${RANDOM_STR}' \
-    < Vagrantfile.tmp > Vagrantfile
+# Start services
+[ -e /dev/kvm ] && chown root:kvm /dev/kvm
+libvirtd --daemon
+virtlogd --daemon
+if kvm-ok 2>&1 | grep -q "KVM acceleration can NOT be used"; then
+    export LIBVIRT_DRIVER="qemu"
+    echo "--> KVM acceleration can NOT be used"
 fi
-
-chown root:kvm /dev/kvm
-
-/usr/sbin/libvirtd --daemon
-/usr/sbin/virtlogd --daemon
 # smbd --daemon
-
+# Start vagrant box
 # Debug: --debug
 vagrant up --provider=libvirt
 # Display running boxes
 virsh list --all
-exec "$@"
-
 # Keep container running
 exec tail -f /dev/null
