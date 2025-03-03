@@ -3,6 +3,7 @@ set -eou pipefail
 pwd
 # Start services
 [ -e /dev/kvm ] && chown root:kvm /dev/kvm
+dbus-daemon --system --fork
 libvirtd --daemon
 virtlogd --daemon
 if kvm-ok 2>&1 | grep -q "KVM acceleration can NOT be used"; then
