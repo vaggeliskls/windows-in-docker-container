@@ -5,9 +5,19 @@ Discover an innovative and efficient method of deploying Windows OS (x64) on you
 
 ## 📋 Prerequisites
 
-- [Docker](https://www.docker.com/) version 20 or higher.
+Ensure your system meets the following requirements:
 
-> The docker compose is embedded as plugin
+- **Docker:** Version 20 or higher [(Install Docker)](https://www.docker.com/)
+
+- **Host OS:** Linux
+
+- **Virtualization Enabled:**
+  - Check with:
+    - `grep -E -o 'vmx|svm' /proc/cpuinfo`
+  - Output indicates:
+    - `vmx` → Intel VT-x is supported & enabled.
+    - `svm` → AMD-V is supported & enabled.
+  - If virtualization is not enabled, enable it in the BIOS/UEFI settings.
 
 ## 🚀 Deployment Guide
 
@@ -28,6 +38,8 @@ services:
     stdin_open: true
     tty: true
     privileged: true
+    cgroup: host
+    restart: always
     ports:
       - 3389:3389
       - 2222:2222
