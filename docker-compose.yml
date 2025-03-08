@@ -9,6 +9,10 @@ services:
     stdin_open: true
     tty: true
     privileged: true
+    cgroup: host
+    restart: always
+    volumes:
+      - ./Vagrantfile:/app/Vagrantfile
     # runtime: nvidia
     ports:
       - 3389:3389
