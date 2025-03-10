@@ -1,0 +1,18 @@
+services:
+  win10:
+    volumes:
+      # - /sys/fs/cgroup:/sys/fs/cgroup  # Required for cgroups
+      - libvirt_data:/var/lib/libvirt  # ✅ Persist VM disk images
+      - vagrant_data:/root/.vagrant.d  # ✅ Persist Vagrant metadata
+      - vagrant_project:/app/.vagrant  # ✅ Persist Vagrant project
+      - libvirt_config:/etc/libvirt    # ✅ Persist VM configs
+
+volumes:
+  libvirt_data:
+    name: libvirt_data
+  vagrant_data:
+    name: vagrant_data
+  vagrant_project:
+    name: vagrant_project
+  libvirt_config:
+    name: libvirt_config

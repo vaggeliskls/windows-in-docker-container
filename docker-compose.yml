@@ -1,8 +1,7 @@
-version: "3.9"
-
 services:
   win10:
     image: docker.io/vaggeliskls/windows-in-docker-container:latest
+    platform: linux/amd64
     build:
       dockerfile: ./Dockerfile
       context: .
@@ -10,8 +9,11 @@ services:
     stdin_open: true
     tty: true
     privileged: true
-    # runtime: nvidia
+    cgroup: host
+    restart: always
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./Vagrantfile:/app/Vagrantfile
+    # runtime: nvidia
     ports:
       - 3389:3389
+      - 2222:2222
