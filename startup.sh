@@ -1,20 +1,24 @@
 #!/bin/bash
 set -eou pipefail
-pwd
-# Start services
+
+# Allow libvirt access to KVM device when present
 [ -e /dev/kvm ] && chown root:kvm /dev/kvm
-# dbus-daemon --system --fork
-libvirtd --daemon
+
+# Start libvirt services. Direct daemon logs to a file we can tail at the end.
+mkdir -p /var/log/libvirt
+LIBVIRT_LOG_OUTPUTS="1:file:/var/log/libvirt/libvirtd.log" libvirtd --daemon
 virtlogd --daemon
+
+# Fall back to qemu if KVM acceleration is unavailable
 if kvm-ok 2>&1 | grep -q "KVM acceleration can NOT be used"; then
     export LIBVIRT_DRIVER="qemu"
-    echo "--> KVM acceleration can NOT be used"
+    echo "--> KVM acceleration is not available, falling back to qemu"
 fi
-# smbd --daemon
-# Start vagrant box
-# Debug: --debug
+
+# Boot the Vagrant VM
 vagrant up --provider=libvirt
-# Display running boxes
+
+# Show running domains, then keep the container alive by tailing libvirt logs
 virsh list --all
-# Keep container running
-exec tail -f /dev/null
+touch /var/log/libvirt/libvirtd.log
+exec tail -F /var/log/libvirt/libvirtd.log
