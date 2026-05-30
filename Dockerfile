@@ -11,7 +11,7 @@ ARG VAGRANT_VERSION=2.4.3
 ARG VAGRANT_BOX=peru/windows-server-2022-standard-x64-eval
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
         ca-certificates \
         wget \
         curl \
@@ -27,7 +27,7 @@ RUN apt-get update && \
         cpu-checker \
         build-essential && \
     wget -q "https://releases.hashicorp.com/vagrant/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}-1_amd64.deb" && \
-    apt-get install -y --no-install-recommends "./vagrant_${VAGRANT_VERSION}-1_amd64.deb" && \
+    apt-get install -y "./vagrant_${VAGRANT_VERSION}-1_amd64.deb" && \
     rm -f "./vagrant_${VAGRANT_VERSION}-1_amd64.deb" && \
     vagrant plugin install vagrant-libvirt && \
     vagrant box add --provider libvirt "${VAGRANT_BOX}" && \
