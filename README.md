@@ -13,20 +13,22 @@ Ensure your system meets the following requirements:
 
 - **Virtualization Enabled:**
   - Check with:
-    - `grep -E -o 'vmx|svm' /proc/cpuinfo`
+    - `lscpu | grep -i Virtualization`
   - Output indicates:
-    - `vmx` → Intel VT-x is supported & enabled.
-    - `svm` → AMD-V is supported & enabled.
+    - `VT-x` → Intel virtualization is supported & enabled.
+    - `AMD-V` → AMD virtualization is supported & enabled.
   - If virtualization is not enabled, enable it in the BIOS/UEFI settings.
+
+- **`cgroup: host`** in the compose file is required: libvirt and the daemons it spawns need full cgroup access, otherwise the container fails to start on cgroup v2 hosts.
 
 ## 🚀 Deployment Guide
 
 1. Create/Update the environmental file `.env`
 ```
 # Vagrant image settings
-MEMORY=8000 # 8GB
+MEMORY=8000     # MiB (~8 GB)
 CPU=4
-DISK_SIZE=100
+DISK_SIZE=100   # GiB
 ```
 2. Create `docker-compose.yml`
 ```yaml
@@ -44,7 +46,7 @@ services:
       - 3389:3389
       - 2222:2222
 ```
-4. Create `docker-compose.override.yml` when you want your VM to be persistent
+3. Create `docker-compose.override.yml` when you want your VM to be persistent
 ```yaml
 services:
   win10:
@@ -65,7 +67,9 @@ volumes:
     name: libvirt_config
 ```
 
-5. Run: `docker compose up -d`
+4. Run: `docker compose up -d`
+
+> **First boot takes several minutes** — the Vagrant box is already baked into the image, but the VM still has to boot and run the provisioning script (Chocolatey install, disk resize, registry tweaks). Follow progress with `docker compose logs -f`.
 
 > When you want to destroy everything `docker compose down -v`
 
@@ -97,9 +101,23 @@ Default users based on the Vagrant image are:
 1. Administrator
     - Username: Administrator
     - Password: vagrant
-1. User
+2. User
     - Username: vagrant
     - Password: vagrant
+
+## ⚠️ Limitations
+
+- **Linux host only** — depends on `/dev/kvm` and libvirt; macOS and Windows hosts are not supported.
+- **Eval license** — the underlying box ships an evaluation copy of Windows Server 2022. Activation expires per Microsoft's eval terms.
+- **No synced folders** — `rsync`, `smb`, and `nfs` are all unwired in the [Vagrantfile](Vagrantfile) (rsync needs a Windows-side install before provisioning runs; SMB synced folders aren't supported with a Linux host; in-container NFS hits `no support in current kernel`).
+- **Performance** — without nested KVM available to Docker (e.g. on a cloud VM that doesn't expose KVM), the guest falls back to plain QEMU and is several times slower.
+
+## 🔧 Troubleshooting
+
+- **`KVM acceleration is not available`** in logs → the host isn't exposing `/dev/kvm`. Check virtualization is enabled in BIOS, the `kvm` module is loaded (`lsmod | grep kvm`), and `/dev/kvm` exists on the host. The startup script falls back to QEMU automatically; expect a large slowdown.
+- **Port 3389 / 2222 already in use** → another RDP/SSH service is bound on the host. Stop it, or change the host-side port mapping in `docker-compose.yml`.
+- **Container exits immediately** → almost always a cgroup or privilege problem. Confirm `privileged: true` and `cgroup: host` are set, then check `docker compose logs win10`.
+- **`vagrant up` hangs at "Waiting for domain to get an IP address"** → libvirt's default NAT network isn't running. Restart the container, or run `virsh net-start default` from inside it.
 
 ## 📚 Further Reading and Resources
 
