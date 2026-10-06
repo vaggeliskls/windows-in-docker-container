@@ -1,0 +1,36 @@
+# Alternative setup based on dockur/windows, which downloads Windows directly from Microsoft.
+# See the "Important notice" section in the repository README for background.
+#
+#   docker compose up -d
+#   open http://localhost:8006 to watch the unattended install
+#
+# All settings: https://github.com/dockur/windows/blob/master/docs/environment.md
+
+services:
+  windows:
+    image: dockurr/windows
+    container_name: windows
+    environment:
+      VERSION: "2022"        # Windows Server 2022. Use "11" for Windows 11 Pro.
+      USERNAME: "vagrant"
+      PASSWORD: "vagrant"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      DISK_SIZE: "100G"      # the installer uses the whole disk, no resize step needed
+      # KEY: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"   # optional product key to activate Windows
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "8006:8006"            # web viewer
+      - "3389:3389/tcp"        # RDP
+      - "3389:3389/udp"
+      - "2222:22"              # SSH, enabled by oem/install.bat
+    volumes:
+      - ./windows:/storage   # installed disk and firmware state
+      - ./oem:/oem           # copied to C:\OEM, install.bat runs once after install
+      - ./shared:/shared     # optional host folder, appears as drive Z: in Windows
+    restart: always
+    stop_grace_period: 2m
