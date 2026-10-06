@@ -35,6 +35,81 @@ Discover an innovative and efficient method of deploying Windows OS (x64) on you
 
 ⭐ **Don't forget to star the project if it helped you!**
 
+<a id="important-notice"></a>
+## ⚠️ Important notice: Vagrant box registry shutting down on 31 December 2026
+
+> [!IMPORTANT]
+> HashiCorp is decommissioning the **HCP Vagrant Registry** (vagrantcloud.com, formerly Vagrant Cloud), which hosts the Windows box this image is built from. The published image is not affected. Building the image from source will need a new box location after **31 December 2026**.
+
+| Date | What happens |
+|---|---|
+| 1 October 2026 | No new boxes or registries can be created |
+| 2 November 2026 | End of support and maintenance |
+| **31 December 2026** | **Registry decommissioned. Box downloads stop working** |
+
+Sources: [HashiCorp announcement](https://www.hashicorp.com/blog/hcp-vagrant-deprecation-important-dates-and-migration-guidance) and the [HCP Vagrant end-of-life page](https://developer.hashicorp.com/hcp/docs/vagrant/hcp-vagrant-eol).
+
+### What this means for you
+
+- **Using the published image? Nothing changes.** The box `peru/windows-server-2022-standard-x64-eval` is baked into `vaggeliskls/windows-in-docker-container` at build time, and the container never contacts the registry at run time. `docker compose pull` and your existing volumes keep working.
+- **Building the image yourself?** The `vagrant box add` step in the [Dockerfile](Dockerfile) downloads the box from the registry. After the shutdown, point it at a copy of the box that you host. The steps are below.
+
+### Keep building this image: host the box yourself
+
+1. Download the box and verify it **before 31 December 2026**:
+
+   ```bash
+   curl -L -o windows-server-2022-standard-x64-eval.box \
+     "https://vagrantcloud.com/peru/boxes/windows-server-2022-standard-x64-eval/versions/20231201.01/providers/libvirt/amd64/vagrant.box"
+   echo "1c9da9766bcfd1fff6b0169582a14d2c8e6397e98719e6824b711db820285301  windows-server-2022-standard-x64-eval.box" | sha256sum -c
+   ```
+
+2. Upload the file to storage you control, for example an S3 bucket, a GitHub release, or an internal web server. HashiCorp's [end-of-life page](https://developer.hashicorp.com/hcp/docs/vagrant/hcp-vagrant-eol) describes the S3 layout.
+
+3. In the [Dockerfile](Dockerfile), replace the registry lookup with your URL:
+
+   ```dockerfile
+   ARG VAGRANT_BOX_URL=https://your-host/windows-server-2022-standard-x64-eval.box
+   RUN vagrant box add --provider libvirt --name "${VAGRANT_BOX}" "${VAGRANT_BOX_URL}" && \
+       vagrant init "${VAGRANT_BOX}"
+   ```
+
+Everything else, including the [Vagrantfile](Vagrantfile) provisioning and the compose files, stays the same. You can also build your own box with Packer, for example with [rgl/windows-vagrant](https://github.com/rgl/windows-vagrant), and host it the same way.
+
+### Alternative: dockur/windows
+
+If you would rather not host a box, [dockur/windows](https://github.com/dockur/windows) downloads the Windows installer directly from Microsoft, so it has no dependency on the Vagrant registry. The [examples/dockur](examples/dockur/) folder contains a ready-to-use compose file and an `install.bat` that sets up the same things the Vagrantfile provisions today: Chocolatey, an OpenSSH server on port 22, and long path support.
+
+```yaml
+services:
+  windows:
+    image: dockurr/windows
+    environment:
+      VERSION: "2022"        # Windows Server 2022. Use "11" for Windows 11 Pro.
+      USERNAME: "vagrant"
+      PASSWORD: "vagrant"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      DISK_SIZE: "100G"
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "8006:8006"            # web viewer, watch the install here
+      - "3389:3389/tcp"
+      - "3389:3389/udp"
+      - "2222:22"              # SSH, enabled by install.bat
+    volumes:
+      - ./windows:/storage   # installed disk lives here
+      - ./oem:/oem           # folder containing install.bat
+    restart: always
+    stop_grace_period: 2m
+```
+
+The first start downloads the ISO and installs Windows unattended, so it takes longer than booting a pre-built box. Later starts boot the installed disk directly.
+
 ## 📋 Prerequisites
 
 Ensure your system meets the following requirements:
@@ -139,6 +214,7 @@ Default users based on the Vagrant image are:
 
 ## ⚠️ Limitations
 
+- **Box source shutting down** — the Vagrant registry that hosts the box closes on 31 December 2026. See the [important notice](#important-notice) at the top.
 - **Linux host only** — depends on `/dev/kvm` and libvirt; macOS and Windows hosts are not supported.
 - **Eval license** — the underlying box ships an evaluation copy of Windows Server 2022. Activation expires per Microsoft's eval terms.
 - **No synced folders** — `rsync`, `smb`, and `nfs` are all unwired in the [Vagrantfile](Vagrantfile) (rsync needs a Windows-side install before provisioning runs; SMB synced folders aren't supported with a Linux host; in-container NFS hits `no support in current kernel`).
